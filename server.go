@@ -6,12 +6,6 @@ import (
 	"net/http"
 )
 
-const (
-	SERVER_HOST = "localhost"
-	SERVER_PORT = "9999"
-	SERVER_TYPE = "tcp"
-)
-
 func copyHeader(dst, src http.Header) {
 	for k, vv := range src {
 		for _, v := range vv {
