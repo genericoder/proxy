@@ -17,19 +17,23 @@ func copyHeader(dst, src http.Header) {
 func processURL(w http.ResponseWriter, r *http.Request) {
 	response, err := http.Get(r.URL.String())
 	if err != nil {
-		log.Fatal(err.Error())
+		log.Printf("upstream request failed: %s", err.Error())
+		http.Error(w, "bad gateway", http.StatusBadGateway)
+		return
 	}
 	defer response.Body.Close()
 
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Fatal(err.Error())
+		log.Printf("reading upstream body failed: %s", err.Error())
+		http.Error(w, "bad gateway", http.StatusBadGateway)
+		return
 	}
 	copyHeader(w.Header(), response.Header)
 	w.WriteHeader(response.StatusCode)
 	_, err = w.Write(body)
 	if err != nil {
-		log.Fatal(err.Error())
+		log.Printf("writing response failed: %s", err.Error())
 	}
 }
 
