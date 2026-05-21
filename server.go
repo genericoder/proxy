@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 )
 
 func copyHeader(dst, src http.Header) {
@@ -37,7 +38,14 @@ func processURL(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func listenAddr() string {
+	if port := os.Getenv("PORT"); port != "" {
+		return ":" + port
+	}
+	return ":19998"
+}
+
 func main() {
 	http.HandleFunc("/", processURL)
-	http.ListenAndServe(":19999", nil)
+	http.ListenAndServe(listenAddr(), nil)
 }
